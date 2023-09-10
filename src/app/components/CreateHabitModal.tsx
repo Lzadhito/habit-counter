@@ -30,6 +30,7 @@ export default function CreateHabitModal({ isOpen, onOpenChange, onClose }: Prop
           <ModalHeader className="flex flex-col gap-1">Create New Habit</ModalHeader>
           <ModalBody>
             <Input
+              label="New Habit Name"
               value={newValue}
               onChange={(event) => setNewValue(event.currentTarget.value)}
               placeholder="Drinking 2L of water everyday"
