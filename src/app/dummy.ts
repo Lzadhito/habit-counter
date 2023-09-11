@@ -1,8 +1,6 @@
-export const DUMMY_HABIT_LIST: {
-  name: string;
-  dates: string[];
-  isBadHabit?: boolean;
-}[] = [
+import { OCCURENCE } from './components/constants';
+
+export const DUMMY_HABIT_LIST: Habit[] = [
   {
     name: 'Minum Air Putih 2L',
     dates: [
@@ -12,6 +10,7 @@ export const DUMMY_HABIT_LIST: {
       '2023-09-27T22:57:57.374Z',
       '2023-09-30T22:57:57.374Z',
     ],
+    occurence: OCCURENCE.DAILY,
   },
   {
     name: 'Tidak beli parfum',
@@ -24,5 +23,6 @@ export const DUMMY_HABIT_LIST: {
       '2023-09-29T22:57:57.374Z',
     ],
     isBadHabit: true,
+    occurence: OCCURENCE.EVERY_TWO_DAYS,
   },
 ];

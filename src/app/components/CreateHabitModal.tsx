@@ -5,7 +5,9 @@ import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@nextu
 import { Button } from '@nextui-org/button';
 import { Input } from '@nextui-org/input';
 import { Switch } from '@nextui-org/switch';
-import { DEFAULT_NEW_HABIT_VALUES } from './constants';
+import { DEFAULT_NEW_HABIT_VALUES, OCCURENCE } from './constants';
+import { Select, SelectItem } from '@nextui-org/select';
+import enumToSentence from '@/helpers/enumToSentence';
 
 interface Props {
   isOpen: boolean;
@@ -25,6 +27,8 @@ export default function CreateHabitModal({ isOpen, onOpenChange, onClose }: Prop
     onClose();
   }
 
+  console.log(formValues.occurence);
+
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent>
@@ -37,6 +41,29 @@ export default function CreateHabitModal({ isOpen, onOpenChange, onClose }: Prop
               onChange={(event) => setFormValues((prev) => ({ ...prev, newHabit: event.target.value }))}
               placeholder="Drinking 2L of water everyday"
             />
+            <div className="flex gap-2">
+              <Select
+                label="Occurence"
+                placeholder="Select occurence"
+                onChange={(event) => setFormValues((prev) => ({ ...prev, occurence: event.target.value }))}
+              >
+                {Object.keys(OCCURENCE).map((key) => (
+                  // @ts-ignore
+                  <SelectItem className="text-foreground" key={OCCURENCE[key]} value={OCCURENCE[key]}>
+                    {enumToSentence(key)}
+                  </SelectItem>
+                ))}
+              </Select>
+              {Number(formValues.occurence) === OCCURENCE.CUSTOM && (
+                <Input
+                  label="Days"
+                  placeholder="days"
+                  value={formValues.customOccurence}
+                  type="number"
+                  onChange={(event) => setFormValues((prev) => ({ ...prev, customOccurence: event.target.value }))}
+                />
+              )}
+            </div>
             <Switch
               color="danger"
               isSelected={formValues.isBadHabit}

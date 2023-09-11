@@ -2,7 +2,10 @@ import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@nextu
 import { Button } from '@nextui-org/button';
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
-import { Avatar, Chip } from '@nextui-org/react';
+import { Avatar } from '@nextui-org/avatar';
+import { Chip } from '@nextui-org/chip';
+import { OCCURENCE, OCCURENCE_VALUES_TO_KEY } from '../constants';
+import enumToSentence from '@/helpers/enumToSentence';
 
 interface Props {
   name: string;
@@ -10,6 +13,7 @@ interface Props {
   isOpen: boolean;
   isBadHabit?: boolean;
   streakCount: number;
+  occurence: number;
   onOpenChange: () => void;
   onClose: () => void;
 }
@@ -22,6 +26,7 @@ export default function HabitDetailModal({
   onClose,
   isBadHabit,
   streakCount,
+  occurence,
 }: Props) {
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -39,6 +44,12 @@ export default function HabitDetailModal({
               }}
             />
             <p>Habit Done: {dates.length}</p>
+            <p>
+              Occurence:{' '}
+              {occurence === OCCURENCE.CUSTOM
+                ? `Every ${occurence} days`
+                : enumToSentence(OCCURENCE_VALUES_TO_KEY[occurence])}
+            </p>
             {streakCount > 1 ? (
               <>
                 <Chip

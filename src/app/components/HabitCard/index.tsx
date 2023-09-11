@@ -7,12 +7,11 @@ import { useEffect, useState, useTransition } from 'react';
 import { intervalToDuration } from 'date-fns';
 
 interface Props {
-  name: string;
-  dates: string[];
-  isBadHabit?: boolean;
+  habit: Habit;
 }
 
-export default function HabitCard({ name, dates, isBadHabit }: Props) {
+export default function HabitCard({ habit }: Props) {
+  const { dates, name, occurence, isBadHabit } = habit;
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [streakCount, setStreakCount] = useState(0);
   const [_, startTransition] = useTransition();
@@ -54,6 +53,7 @@ export default function HabitCard({ name, dates, isBadHabit }: Props) {
       </Card>
 
       <HabitDetailModal
+        occurence={occurence}
         streakCount={streakCount}
         onClose={onClose}
         isOpen={isOpen}
