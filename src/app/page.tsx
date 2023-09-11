@@ -18,7 +18,13 @@ export default function Page() {
       <main className="space-y-8 px-4 pt-4">
         {[...DUMMY_HABIT_LIST, ...DUMMY_HABIT_LIST, ...DUMMY_HABIT_LIST, ...DUMMY_HABIT_LIST, ...DUMMY_HABIT_LIST].map(
           (habit) => (
-            <HabitCard key={habit.name} count={habit.count} name={habit.name} isStreak={habit.isStreak} />
+            <HabitCard
+              key={habit.name}
+              count={habit.count}
+              name={habit.name}
+              isStreak={habit.isStreak}
+              isBadHabit={habit.isBadHabit}
+            />
           )
         )}
       </main>

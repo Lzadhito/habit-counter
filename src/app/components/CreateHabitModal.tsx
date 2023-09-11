@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@nextui-org/modal';
 import { Button } from '@nextui-org/button';
 import { Input } from '@nextui-org/input';
+import { Switch } from '@nextui-org/switch';
+import { DEFAULT_NEW_HABIT_VALUES } from './constants';
 
 interface Props {
   isOpen: boolean;
@@ -12,11 +14,11 @@ interface Props {
 }
 
 export default function CreateHabitModal({ isOpen, onOpenChange, onClose }: Props) {
-  const [newValue, setNewValue] = useState('');
+  const [formValues, setFormValues] = useState(DEFAULT_NEW_HABIT_VALUES);
 
   // Reset input on modal close/open
   useEffect(() => {
-    setNewValue('');
+    setFormValues(DEFAULT_NEW_HABIT_VALUES);
   }, [isOpen]);
 
   function handleSubmitHabit() {
@@ -31,13 +33,25 @@ export default function CreateHabitModal({ isOpen, onOpenChange, onClose }: Prop
           <ModalBody>
             <Input
               label="New Habit Name"
-              value={newValue}
-              onChange={(event) => setNewValue(event.currentTarget.value)}
+              value={formValues.newHabit}
+              onChange={(event) => setFormValues((prev) => ({ ...prev, newHabit: event.target.value }))}
               placeholder="Drinking 2L of water everyday"
             />
+            <Switch
+              color="danger"
+              isSelected={formValues.isBadHabit}
+              onValueChange={(isBadHabit) => setFormValues((prev) => ({ ...prev, isBadHabit }))}
+            >
+              Is it bad habit?
+            </Switch>
           </ModalBody>
           <ModalFooter>
-            <Button color="primary" variant="flat" onPress={handleSubmitHabit} fullWidth>
+            <Button
+              color={formValues.isBadHabit ? 'danger' : 'primary'}
+              variant="flat"
+              onPress={handleSubmitHabit}
+              fullWidth
+            >
               Save Habit
             </Button>
           </ModalFooter>

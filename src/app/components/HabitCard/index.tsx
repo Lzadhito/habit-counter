@@ -8,14 +8,15 @@ interface Props {
   name: string;
   count: number;
   isStreak?: boolean;
+  isBadHabit?: boolean;
 }
 
-export default function HabitCard({ name, count, isStreak }: Props) {
+export default function HabitCard({ name, count, isStreak, isBadHabit }: Props) {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
   return (
     <>
-      <Card onPress={onOpen} isPressable className="w-full">
+      <Card onPress={onOpen} isPressable className={`w-full ${isBadHabit ? 'bg-danger-400 text-white' : ''}`}>
         <CardBody className="flex flex-row items-center gap-4">
           <div className="flex flex-col items-center gap-2">
             <sub>Counter</sub>
@@ -28,7 +29,14 @@ export default function HabitCard({ name, count, isStreak }: Props) {
         </CardBody>
       </Card>
 
-      <HabitDetailModal onClose={onClose} isOpen={isOpen} onOpenChange={onOpenChange} count={count} name={name} />
+      <HabitDetailModal
+        onClose={onClose}
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        count={count}
+        name={name}
+        isBadHabit={isBadHabit}
+      />
     </>
   );
 }
