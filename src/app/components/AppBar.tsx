@@ -12,7 +12,7 @@ export default function AppBar() {
     <>
       <Navbar>
         <NavbarBrand>
-          <p className="font-bold text-inherit">HABIT COUNTER</p>
+          <p className="font-bold text-inherit">{"How's My Progress"}</p>
         </NavbarBrand>
         <NavbarContent className="sm:flex" justify="end">
           <NavbarItem>
