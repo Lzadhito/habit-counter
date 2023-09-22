@@ -1,33 +1,28 @@
-'use client';
-
-import { Button } from '@nextui-org/button';
-import Icon from './components/Icon';
-import { DUMMY_HABIT_LIST } from './dummy';
-import HabitCard from './components/HabitCard';
 import AppBar from './components/AppBar';
-import CreateHabitModal from './components/CreateHabitModal';
-import { useDisclosure } from '@nextui-org/use-disclosure';
+import { redirect } from 'next/navigation';
+import StartCountingButton from './components/StartCountingButton';
+import { getServerSession } from 'next-auth';
 
-export default function Page() {
-  const { isOpen, onClose, onOpenChange, onOpen } = useDisclosure();
+export default async function LandingPage() {
+  const session = await getServerSession();
+  if (session?.user) redirect('/home');
 
   return (
     <>
-      <AppBar />
-
-      <main className="space-y-8 px-4 pt-4">
-        {[...DUMMY_HABIT_LIST, ...DUMMY_HABIT_LIST, ...DUMMY_HABIT_LIST, ...DUMMY_HABIT_LIST, ...DUMMY_HABIT_LIST].map(
-          (habit) => (
-            <HabitCard key={habit.name} habit={habit} />
-          )
-        )}
+      <AppBar className="absolute top-0" />
+      <main className="flex flex-col gap-4 items-center justify-center h-screen overflow-hidden polka px-4 opacity-80">
+        <div className="text-center leading-8 md:leading-10 h-fit">
+          <div className="inline-block">
+            <h1 className="tracking-tight inline font-semibold text-[2.5rem] lg:text-5xl">
+              Count how far you&apos;ve been to be&nbsp;
+            </h1>
+            <h1 className="tracking-tight inline font-semibold from-[#5EA2EF] to-[#0072F5] text-[2.5rem] lg:text-5xl bg-clip-text text-transparent bg-gradient-to-b">
+              Your Better Self&nbsp;
+            </h1>
+          </div>
+        </div>
+        <StartCountingButton />
       </main>
-
-      <Button variant="flat" onClick={onOpen} color="primary" isIconOnly className="fixed bottom-10 right-10">
-        <Icon icon="plus" />
-      </Button>
-
-      <CreateHabitModal isOpen={isOpen} onClose={onClose} onOpenChange={onOpenChange} />
     </>
   );
 }

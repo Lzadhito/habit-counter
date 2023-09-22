@@ -13,5 +13,5 @@ export const DEFAULT_NEW_HABIT_VALUES = {
   newHabit: '',
   isBadHabit: false,
   occurence: OCCURENCE.DAILY,
-  customOccurence: null,
+  customOccurence: undefined,
 };
