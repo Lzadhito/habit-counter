@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@nextui-org/modal';
 import { Button } from '@nextui-org/button';
 import { Input } from '@nextui-org/input';
@@ -22,8 +22,16 @@ export default function CreateHabitModal() {
     setFormValues(DEFAULT_NEW_HABIT_VALUES);
   }, [isOpen]);
 
-  function handleSubmitHabit() {
-    onClose();
+  async function handleSubmitHabit() {
+    const res = await fetch(`/api/habit`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formValues),
+    });
+    const resp = await res.json();
+    if (resp.success) onClose();
   }
 
   function handleChangeValue(name: keyof typeof DEFAULT_NEW_HABIT_VALUES, event: any) {
@@ -48,36 +56,37 @@ export default function CreateHabitModal() {
                 onChange={(event) => handleChangeValue('newHabit', event)}
                 placeholder="Drinking 2L of water everyday"
               />
-              <div className="flex gap-2">
-                <Select
-                  label="Occurence"
-                  placeholder="Select occurence"
-                  onChange={(event) => handleChangeValue('occurence', event)}
-                >
-                  {Object.keys(OCCURENCE).map((key) => (
-                    // @ts-ignore
-                    <SelectItem className="text-foreground" key={OCCURENCE[key]} value={OCCURENCE[key]}>
-                      {enumToSentence(key)}
-                    </SelectItem>
-                  ))}
-                </Select>
-                {Number(formValues.occurence) === OCCURENCE.CUSTOM && (
-                  <Input
-                    label="Days"
-                    placeholder="days"
-                    value={formValues.customOccurence}
-                    type="number"
-                    onChange={(event) => handleChangeValue('customOccurence', event)}
-                  />
-                )}
-              </div>
+              {!formValues.isBadHabit && (
+                <div className="flex gap-2">
+                  <Select
+                    label="Occurence"
+                    placeholder="Select occurence"
+                    onChange={(event) => handleChangeValue('occurence', event)}
+                  >
+                    {Object.keys(OCCURENCE).map((key) => (
+                      // @ts-ignore
+                      <SelectItem className="text-foreground" key={OCCURENCE[key]} value={OCCURENCE[key]}>
+                        {enumToSentence(key)}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                  {Number(formValues.occurence) === OCCURENCE.CUSTOM && (
+                    <Input
+                      label="Days"
+                      placeholder="days"
+                      value={formValues.customOccurence}
+                      type="number"
+                      onChange={(event) => handleChangeValue('customOccurence', event)}
+                    />
+                  )}
+                </div>
+              )}
               <Switch
                 color="danger"
                 isSelected={formValues.isBadHabit}
                 onChange={(event) => handleChangeValue('isBadHabit', event)}
-                // onValueChange={(isBadHabit) => setFormValues((prev) => ({ ...prev, isBadHabit }))}
               >
-                Is it bad habit?
+                Is it a bad habit?
               </Switch>
             </ModalBody>
             <ModalFooter>

@@ -6,8 +6,8 @@ export const OCCURENCE = {
   CUSTOM: -1,
 };
 
-export const OCCURENCE_VALUES_TO_KEY = {};
-Object.keys(OCCURENCE).forEach((key) => (OCCURENCE_VALUES_TO_KEY[OCCURENCE[key]] = key));
+export const OCCURENCE_VALUES_TO_KEY: { [key: number]: string } = {};
+Object.keys(OCCURENCE).forEach((key) => (OCCURENCE_VALUES_TO_KEY[OCCURENCE[key as keyof typeof OCCURENCE]] = key));
 
 export const DEFAULT_NEW_HABIT_VALUES = {
   newHabit: '',

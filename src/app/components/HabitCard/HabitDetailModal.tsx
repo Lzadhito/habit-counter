@@ -4,10 +4,11 @@ import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import { Avatar } from '@nextui-org/avatar';
 import { Chip } from '@nextui-org/chip';
-import { OCCURENCE, OCCURENCE_VALUES_TO_KEY } from '../constants';
+import { OCCURENCE, OCCURENCE_VALUES_TO_KEY } from '@/app/components/constants';
 import enumToSentence from '@/helpers/enumToSentence';
 
 interface Props {
+  id: number;
   name: string;
   dates: string[];
   isOpen: boolean;
@@ -19,6 +20,7 @@ interface Props {
 }
 
 export default function HabitDetailModal({
+  id,
   name,
   isOpen,
   onOpenChange,
@@ -28,6 +30,17 @@ export default function HabitDetailModal({
   streakCount,
   occurence,
 }: Props) {
+  async function handleDoneHabit() {
+    const res = await fetch('/api/habit/count', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id }),
+    });
+    const resp = await res.json();
+    if (resp.success) onClose();
+  }
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent>
@@ -67,7 +80,7 @@ export default function HabitDetailModal({
             ) : null}
           </ModalBody>
           <ModalFooter>
-            <Button color={isBadHabit ? 'danger' : 'success'} variant="flat" onPress={onClose} fullWidth>
+            <Button color={isBadHabit ? 'danger' : 'success'} variant="flat" onPress={handleDoneHabit} fullWidth>
               {isBadHabit ? 'I Did It Today :(' : 'I Did It Today!'}
             </Button>
           </ModalFooter>

@@ -1,49 +1,35 @@
 'use client';
+import { useEffect, useState, useTransition } from 'react';
 
 import { Card, CardBody } from '@nextui-org/card';
 import { useDisclosure } from '@nextui-org/use-disclosure';
 import HabitDetailModal from './HabitDetailModal';
-import { useEffect, useState, useTransition } from 'react';
-import { intervalToDuration } from 'date-fns';
+import countStreak from '@/app/helpers/countStreak';
 
 interface Props {
   habit: Habit;
 }
 
 export default function HabitCard({ habit }: Props) {
-  const { dates, name, occurence, isBadHabit } = habit;
+  const { id, done_dates, name, occurrence, is_bad_habit } = habit;
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [streakCount, setStreakCount] = useState(0);
   const [_, startTransition] = useTransition();
 
   useEffect(() => {
     startTransition(() => {
-      dates.sort().reverse();
-
-      let tempStreakCount = 0;
-      for (let i = 0; i < dates.length; i++) {
-        if (i === 0) continue;
-
-        const curr = dates[i];
-        const { days } = intervalToDuration({
-          start: new Date(curr),
-          end: new Date(dates[i - 1]),
-        });
-        if (days === 1) tempStreakCount++;
-        else break;
-      }
-
-      setStreakCount(tempStreakCount);
+      const streakCount = countStreak(done_dates);
+      setStreakCount(streakCount);
     });
-  }, [dates]);
+  }, [done_dates]);
 
   return (
     <>
-      <Card onPress={onOpen} isPressable className={`w-full ${isBadHabit ? 'bg-danger-400 text-white' : ''}`}>
+      <Card onPress={onOpen} isPressable className={`w-full ${is_bad_habit ? 'bg-danger-400 text-white' : ''}`}>
         <CardBody className="flex flex-row items-center gap-4">
           <div className="flex flex-col items-center gap-2">
             <sub>Counter</sub>
-            <div className="text-2xl font-bold">{dates.length}</div>
+            <div className="text-2xl font-bold">{done_dates.length}</div>
             {streakCount > 2 && <sub>Streak!</sub>}
           </div>
           <div className="flex-1">
@@ -53,14 +39,15 @@ export default function HabitCard({ habit }: Props) {
       </Card>
 
       <HabitDetailModal
-        occurence={occurence}
+        id={id}
+        occurence={occurrence}
         streakCount={streakCount}
         onClose={onClose}
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        dates={dates}
+        dates={done_dates}
         name={name}
-        isBadHabit={isBadHabit}
+        isBadHabit={is_bad_habit}
       />
     </>
   );

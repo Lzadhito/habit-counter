@@ -1,6 +1,7 @@
 interface Habit {
+  id: number;
   name: string;
-  dates: string[];
-  isBadHabit?: boolean;
-  occurence: number;
+  done_dates: string[];
+  is_bad_habit?: boolean;
+  occurrence: number;
 }
