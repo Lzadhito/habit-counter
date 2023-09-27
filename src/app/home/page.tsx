@@ -3,18 +3,13 @@ import { redirect } from 'next/navigation';
 import AppBar from '@/app/components/AppBar';
 import HabitCard from '@/app/components/HabitCard';
 import CreateHabitModal from '@/app/components/CreateHabitModal';
+import getHabitList from '@/app/api/habit/lib/getHabitList';
 
 export default async function HomePage() {
   const session = await getServerSession();
   if (!session || !session.user) redirect('/');
 
-  const resp = await fetch(`${process.env.NEXT_API_URL}/habit`, {
-    method: 'GET',
-    next: {
-      tags: ['habits'],
-    },
-  });
-  const { habits }: { habits: Habit[] } = await resp.json();
+  const habits = (await getHabitList()) as Habit[];
 
   return (
     <>

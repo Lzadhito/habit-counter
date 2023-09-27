@@ -2,15 +2,10 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { sql } from '@vercel/postgres';
 import { revalidateTag } from 'next/cache';
+import getHabitList from './lib/getHabitList';
 
 export async function GET() {
-  const session = await getServerSession();
-  const { rows: habits } = await sql`
-    SELECT * FROM HABIT
-    WHERE email = ${session?.user?.email}
-    ORDER BY created_at DESC;
-  `;
-
+  const habits = await getHabitList();
   return NextResponse.json({
     habits,
   });
