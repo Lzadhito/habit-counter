@@ -1,6 +1,5 @@
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
-import { headers } from 'next/headers';
 import AppBar from '@/app/components/AppBar';
 import HabitCard from '@/app/components/HabitCard';
 import CreateHabitModal from '@/app/components/CreateHabitModal';
@@ -11,7 +10,6 @@ export default async function HomePage() {
 
   const resp = await fetch(`${process.env.NEXT_API_URL}/habit`, {
     method: 'GET',
-    headers: headers(),
     next: {
       tags: ['habits'],
     },
