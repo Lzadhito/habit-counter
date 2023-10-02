@@ -9,9 +9,7 @@ export default async function HomePage() {
   const session = await getServerSession();
   if (!session || !session.user) redirect('/');
 
-  const resp = await fetch(`${process.env.NEXT_API_URL}/habit`, {
-    headers: headers(),
-  });
+  const resp = await fetch(`${process.env.NEXT_API_URL}/habit`);
   const { habits } = await resp.json();
 
   return (
