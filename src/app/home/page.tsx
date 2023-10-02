@@ -9,7 +9,13 @@ export default async function HomePage() {
   const session = await getServerSession();
   if (!session || !session.user) redirect('/');
 
-  const resp = await fetch(`${process.env.NEXT_API_URL}/habit`);
+  const cookie = headers().get('cookie');
+
+  const resp = await fetch(`${process.env.NEXT_API_URL}/habit`, {
+    headers: {
+      Cookie: cookie as string,
+    },
+  });
   const { habits } = await resp.json();
 
   return (
