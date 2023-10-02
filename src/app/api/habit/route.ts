@@ -2,10 +2,14 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { sql } from '@vercel/postgres';
 import { revalidateTag } from 'next/cache';
-import getHabitList from './lib/getHabitList';
 
 export async function GET() {
-  const habits = await getHabitList();
+  const session = await getServerSession();
+  const { rows: habits } = await sql`
+    SELECT * FROM HABIT
+    WHERE email = ${session?.user?.email}
+    ORDER BY created_at DESC;
+  `;
   return NextResponse.json({
     habits,
   });
@@ -22,7 +26,23 @@ export async function POST(request: Request) {
     `;
 
     revalidateTag('habits');
-    return NextResponse.json({ success: true, revalidated: true });
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    return NextResponse.json({ success: false, error: error?.message }, { status: error?.status });
+  }
+}
+
+export async function DELETE(request: Request) {
+  const { id } = await request.json();
+
+  try {
+    await sql`
+      DELETE FROM HABIT
+      WHERE id = ${id};
+    `;
+
+    revalidateTag('habits');
+    return NextResponse.json({ success: true });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error?.message }, { status: error?.status });
   }

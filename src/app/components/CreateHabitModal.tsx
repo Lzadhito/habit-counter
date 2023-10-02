@@ -45,7 +45,7 @@ export default function CreateHabitModal() {
         <Icon icon="plus" />
       </Button>
 
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal disableAnimation isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           <div className="text-foreground">
             <ModalHeader className="flex flex-col gap-1">Create New Habit</ModalHeader>

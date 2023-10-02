@@ -24,7 +24,7 @@ export default function LoginWorkspaceModal({ isOpen, onClose, onOpenChange }: P
   }
 
   return (
-    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+    <Modal disableAnimation isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent>
         <div className="text-foreground">
           <ModalHeader className="flex flex-col gap-1">Workspace</ModalHeader>
