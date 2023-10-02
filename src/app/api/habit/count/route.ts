@@ -1,6 +1,5 @@
 import { sql } from '@vercel/postgres';
 import { getServerSession } from 'next-auth';
-import { revalidateTag } from 'next/cache';
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
@@ -15,8 +14,7 @@ export async function POST(request: Request) {
         AND email = ${session?.user?.email};
     `;
 
-    revalidateTag('habits');
-    return NextResponse.json({ success: true, revalidated: true });
+    return NextResponse.json({ success: true });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error?.message }, { status: error?.status });
   }

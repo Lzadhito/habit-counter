@@ -13,7 +13,7 @@ import { DEFAULT_NEW_HABIT_VALUES, OCCURENCE } from './constants';
 import Icon from './Icon';
 
 export default function CreateHabitModal() {
-  const { isOpen, onClose, onOpenChange, onOpen } = useDisclosure();
+  const { isOpen, onOpenChange, onOpen } = useDisclosure();
 
   const [formValues, setFormValues] = useState(DEFAULT_NEW_HABIT_VALUES);
 
@@ -31,7 +31,7 @@ export default function CreateHabitModal() {
       body: JSON.stringify(formValues),
     });
     const resp = await res.json();
-    if (resp.success) onClose();
+    if (resp.success) location.reload();
   }
 
   function handleChangeValue(name: keyof typeof DEFAULT_NEW_HABIT_VALUES, event: any) {

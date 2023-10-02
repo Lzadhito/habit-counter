@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { sql } from '@vercel/postgres';
-import { revalidateTag } from 'next/cache';
 
 export async function GET() {
   const session = await getServerSession();
@@ -25,7 +24,6 @@ export async function POST(request: Request) {
       VALUES (${session?.user?.email}, ${newHabit}, ${isBadHabit}, ${occurence})
     `;
 
-    revalidateTag('habits');
     return NextResponse.json({ success: true });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error?.message }, { status: error?.status });
@@ -41,7 +39,6 @@ export async function DELETE(request: Request) {
       WHERE id = ${id};
     `;
 
-    revalidateTag('habits');
     return NextResponse.json({ success: true });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error?.message }, { status: error?.status });

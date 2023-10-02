@@ -28,7 +28,6 @@ export default function HabitDetailModal({
   isOpen,
   onOpenChange,
   dates,
-  onClose,
   isBadHabit,
   streakCount,
   occurence,
@@ -37,7 +36,6 @@ export default function HabitDetailModal({
     isOpen: isOpenModalDelete,
     onOpen: onOpenModalDelete,
     onOpenChange: onOpenChangeModalDelete,
-    onClose: onCloseModalDelete,
   } = useDisclosure();
 
   async function handleDoneHabit() {
@@ -49,7 +47,7 @@ export default function HabitDetailModal({
       body: JSON.stringify({ id }),
     });
     const resp = await res.json();
-    if (resp.success) onClose();
+    if (resp.success) location.reload();
   }
 
   async function handleDeleteHabit() {
@@ -61,10 +59,7 @@ export default function HabitDetailModal({
       body: JSON.stringify({ id }),
     });
     const resp = await res.json();
-    if (resp.success) {
-      onCloseModalDelete();
-      onClose();
-    }
+    if (resp.success) location.reload();
   }
 
   return (
