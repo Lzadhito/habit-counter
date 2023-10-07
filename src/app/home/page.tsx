@@ -1,32 +1,17 @@
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
-import { headers } from 'next/headers';
 import AppBar from '@/app/components/AppBar';
-import HabitCard from '@/app/components/HabitCard';
 import CreateHabitModal from '@/app/components/CreateHabitModal';
+import HabitList from '@/app/components/HabitList';
 
 export default async function HomePage() {
   const session = await getServerSession();
   if (!session || !session.user) redirect('/');
-
-  const cookie = headers().get('cookie');
-
-  const resp = await fetch(`${process.env.NEXT_API_URL}/habit`, {
-    headers: {
-      Cookie: cookie as string,
-    },
-  });
-  const { habits } = await resp.json();
-
   return (
-    <>
+    <div className="flex flex-col min-h-screen polka">
       <AppBar />
-      <main className="space-y-8 px-4 pt-4 polka min-h-screen">
-        {habits?.map((habit: Habit, index: number) => (
-          <HabitCard key={`habit-${index}`} habit={habit} />
-        ))}
-      </main>
+      <HabitList />
       <CreateHabitModal />
-    </>
+    </div>
   );
 }

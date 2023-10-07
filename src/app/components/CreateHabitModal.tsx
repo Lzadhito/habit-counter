@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useSWRConfig } from 'swr';
+import useSWRMutation from 'swr/mutation';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@nextui-org/modal';
 import { Button } from '@nextui-org/button';
 import { Input } from '@nextui-org/input';
@@ -9,12 +11,14 @@ import { Select, SelectItem } from '@nextui-org/select';
 import { useDisclosure } from '@nextui-org/use-disclosure';
 import enumToSentence from '@/helpers/enumToSentence';
 
-import { DEFAULT_NEW_HABIT_VALUES, OCCURENCE } from './constants';
 import Icon from './Icon';
+import { DEFAULT_NEW_HABIT_VALUES, OCCURENCE } from './constants';
+import { postMutation } from '../lib/fetcher';
 
 export default function CreateHabitModal() {
-  const { isOpen, onOpenChange, onOpen } = useDisclosure();
-
+  const { isOpen, onOpenChange, onOpen, onClose } = useDisclosure();
+  const { mutate } = useSWRConfig();
+  const { isMutating, trigger } = useSWRMutation('/api/habit', postMutation);
   const [formValues, setFormValues] = useState(DEFAULT_NEW_HABIT_VALUES);
 
   // Reset input on modal close/open
@@ -23,15 +27,11 @@ export default function CreateHabitModal() {
   }, [isOpen]);
 
   async function handleSubmitHabit() {
-    const res = await fetch(`/api/habit`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formValues),
-    });
-    const resp = await res.json();
-    if (resp.success) location.reload();
+    const resp = await trigger(formValues);
+    if (resp.success) {
+      mutate('/api/habit');
+      onClose();
+    }
   }
 
   function handleChangeValue(name: keyof typeof DEFAULT_NEW_HABIT_VALUES, event: any) {
@@ -91,6 +91,7 @@ export default function CreateHabitModal() {
             </ModalBody>
             <ModalFooter>
               <Button
+                isLoading={isMutating}
                 color={formValues.isBadHabit ? 'danger' : 'primary'}
                 variant="flat"
                 onPress={handleSubmitHabit}

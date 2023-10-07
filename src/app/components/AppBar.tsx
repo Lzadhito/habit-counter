@@ -4,7 +4,7 @@ import { Navbar, NavbarBrand, NavbarContent, NavbarItem } from '@nextui-org/navb
 import { Button } from '@nextui-org/button';
 import { signOut, useSession } from 'next-auth/react';
 
-export default function AppBar({ className = '' }) {
+export default function AppBar() {
   const { status } = useSession();
   async function handleSignOut() {
     await signOut({
@@ -13,7 +13,7 @@ export default function AppBar({ className = '' }) {
   }
 
   return (
-    <Navbar maxWidth="full" className={className}>
+    <Navbar maxWidth="full">
       <NavbarBrand>
         <p className="font-bold text-inherit uppercase text-sm tracking-wide opacity-80">{"How's My Progress"}</p>
       </NavbarBrand>

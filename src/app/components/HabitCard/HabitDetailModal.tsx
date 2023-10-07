@@ -9,6 +9,9 @@ import enumToSentence from '@/helpers/enumToSentence';
 
 import Icon from '../Icon';
 import 'react-day-picker/dist/style.css';
+import { useSWRConfig } from 'swr';
+import useSWRMutation from 'swr/mutation';
+import { deleteMutation, postMutation } from '@/app/lib/fetcher';
 
 interface Props {
   id: number;
@@ -27,6 +30,7 @@ export default function HabitDetailModal({
   name,
   isOpen,
   onOpenChange,
+  onClose,
   dates,
   isBadHabit,
   streakCount,
@@ -36,30 +40,33 @@ export default function HabitDetailModal({
     isOpen: isOpenModalDelete,
     onOpen: onOpenModalDelete,
     onOpenChange: onOpenChangeModalDelete,
+    onClose: onCloseModalDelete,
   } = useDisclosure();
+  const { mutate } = useSWRConfig();
+  const { isMutating: isMutatingDoneHabit, trigger: triggerDoneHabit } = useSWRMutation(
+    '/api/habit/count',
+    postMutation
+  );
+  const { isMutating: isMutatingDeleteHabit, trigger: triggerDeleteHabit } = useSWRMutation(
+    '/api/habit',
+    deleteMutation
+  );
 
   async function handleDoneHabit() {
-    const res = await fetch('/api/habit/count', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ id }),
-    });
-    const resp = await res.json();
-    if (resp.success) location.reload();
+    const resp = await triggerDoneHabit({ id });
+    if (resp.success) {
+      mutate('/api/habit');
+      onClose();
+    }
   }
 
   async function handleDeleteHabit() {
-    const res = await fetch('/api/habit', {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ id }),
-    });
-    const resp = await res.json();
-    if (resp.success) location.reload();
+    const resp = await triggerDeleteHabit({ id });
+    if (resp.success) {
+      mutate('/api/habit');
+      onCloseModalDelete();
+      onClose();
+    }
   }
 
   return (
@@ -102,7 +109,13 @@ export default function HabitDetailModal({
               ) : null}
             </ModalBody>
             <ModalFooter>
-              <Button color={isBadHabit ? 'danger' : 'success'} variant="flat" onPress={handleDoneHabit} fullWidth>
+              <Button
+                isLoading={isMutatingDoneHabit}
+                color={isBadHabit ? 'danger' : 'success'}
+                variant="flat"
+                onPress={handleDoneHabit}
+                fullWidth
+              >
                 {isBadHabit ? 'I Did It Today :(' : 'I Did It Today!'}
               </Button>
               <Button isIconOnly color="danger" aria-label="delete" onPress={onOpenModalDelete}>
@@ -118,10 +131,10 @@ export default function HabitDetailModal({
             <h3 className="text-xl font-bold">Are you sure you want to delete {name}?</h3>
           </ModalBody>
           <ModalFooter className="flex flex-col">
-            <Button fullWidth color="danger" onClick={handleDeleteHabit}>
+            <Button isLoading={isMutatingDeleteHabit} fullWidth color="danger" onClick={handleDeleteHabit}>
               Delete
             </Button>
-            <Button fullWidth variant="ghost">
+            <Button isLoading={isMutatingDeleteHabit} fullWidth variant="ghost">
               Cancel
             </Button>
           </ModalFooter>
